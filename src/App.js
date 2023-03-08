@@ -1,24 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import {Route, Routes, BrowserRouter} from 'react-router-dom';
+import Chat from './pages/Chat';
+import Home from './pages/Home';
+import NotFound from './pages/NotFound';
+import { CharacterProvider } from './CharacterContext';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+    <CharacterProvider>
+     <main>
+        <Routes>
+            <Route index element={<Home/>}/>
+            <Route path='/chat/:characterId' element={<Chat/>}/>
+            <Route path="*" element={<NotFound/>}/>
+        </Routes>
+     </main>
+     </CharacterProvider>
+    </BrowserRouter>
   );
 }
 

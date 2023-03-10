@@ -69,7 +69,7 @@ const getSpeechRecognition = async (audioBlob) => {
   const url = 'https://api.openai.com/v1/audio/transcriptions';
   const config = {
     headers: {
-      Authorization: 'Bearer ' + process.env.REACT_APP_OPENAI_API,
+      Authorization: `Bearer  ${process.env.REACT_APP_OPENAI_API}`,
       'Content-Type': 'multipart/form-data'
     }
   };

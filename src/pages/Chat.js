@@ -6,8 +6,6 @@ import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import ChatBubble from "../components/ChatBubble";
 import "../styles/Chat.css";
 import axios from 'axios';
-import pRetry from 'p-retry';
-
 
 
 function Chat(){
@@ -97,24 +95,34 @@ const getSpeechRecognition = async (audioBlob) => {
       console.log(error);
     });
 }
-  const createCompletion = async (text) =>{
-    const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {"role": "system", "content": character.systemRole},
-        {role: "user", content: "User: " + text + "\n" + character.name + ": "}
-      ],
-    });
-    return completion.data.choices[0].message.content;
+const createCompletion = async (text) => {
+  let retries = 5;
+  let response;
+  while (retries > 0) {
+    try {
+      const completion = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+          { "role": "system", "content": character.systemRole },
+          { role: "user", content: "User: " + text + "\n" + character.name + ": " }
+        ],
+      });
+      response = completion.data.choices[0].message.content;
+      break;
+    } catch (error) {
+      console.error("Error creating completion:", error);
+      retries--;
+      if (retries === 0) {
+        throw error;
+      }
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
   }
+  return response;
+}
 
   const getCharacterResponse = async (text) => {
-    const response = await pRetry(createCompletion(text), {
-      onFailedAttempt: error => {
-        console.log(`Attempt ${error.attemptNumber} failed. There are ${error.retriesLeft} retries left.`);
-      },
-      retries: 5
-    });
+    const response = createCompletion(text);
     synthesizeCharacterResponse(response, character.voice);
   };
   const synthesizeCharacterResponse = (text, voice) => {

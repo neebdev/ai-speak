@@ -31,6 +31,7 @@ function Chat(){
   const [recording, setRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
   const [mediaRecorder, setMediaRecorder] = useState(null);
+  const chatEndRef = useRef(null);
 
   const startRecording = () => {
     console.log("Starting recording...");
@@ -153,6 +154,11 @@ const getSpeechRecognition = async (audioBlob) => {
     navigate("/"); 
   };
 
+  useEffect(() => {
+    // Scroll to the chat end when messages change
+    chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
 
   useEffect(() => {
     if (isRunning) {
@@ -203,6 +209,7 @@ const getSpeechRecognition = async (audioBlob) => {
         {messages.map((message, index) => (
           <ChatBubble message={message.message} isUser={message.isUser} key={index}/>
         ))}
+        <div ref={chatEndRef} />
         <button
           onTouchStart={startRecording}
           onTouchEnd={stopRecording} 

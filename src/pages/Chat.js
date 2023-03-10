@@ -122,7 +122,7 @@ const createCompletion = async (text) => {
 }
 
   const getCharacterResponse = async (text) => {
-    const response = createCompletion(text);
+    const response = await createCompletion(text);
     synthesizeCharacterResponse(response, character.voice);
   };
   const synthesizeCharacterResponse = (text, voice) => {

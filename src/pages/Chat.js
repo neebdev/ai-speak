@@ -97,7 +97,7 @@ const getSpeechRecognition = async (audioBlob) => {
       console.log(error);
     });
 }
-  const createCompletion = async () =>{
+  const createCompletion = async (text) =>{
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [

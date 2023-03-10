@@ -6,6 +6,7 @@ import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import ChatBubble from "../components/ChatBubble";
 import "../styles/Chat.css";
 import axios from 'axios';
+import pRetry from 'p-retry';
 
 
 
@@ -96,22 +97,25 @@ const getSpeechRecognition = async (audioBlob) => {
       console.log(error);
     });
 }
-
+  const createCompletion = async () =>{
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {"role": "system", "content": character.systemRole},
+        {role: "user", content: "User: " + text + "\n" + character.name + ": "}
+      ],
+    });
+    return completion.data.choices[0].message.content;
+  }
 
   const getCharacterResponse = async (text) => {
-    try {
-      const completion = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {"role": "system", "content": character.systemRole},
-          {role: "user", content: "User: " + text + "\n" + character.name + ": "}
-        ],
-      });
-      synthesizeCharacterResponse(completion.data.choices[0].message.content, character.voice);
-
-    } catch (error) {
-      console.log("Error in getCharacterResponse:", error);
-    }
+    const response = await pRetry(createCompletion(text), {
+      onFailedAttempt: error => {
+        console.log(`Attempt ${error.attemptNumber} failed. There are ${error.retriesLeft} retries left.`);
+      },
+      retries: 5
+    });
+    synthesizeCharacterResponse(response, character.voice);
   };
   const synthesizeCharacterResponse = (text, voice) => {
     return new Promise((resolve, reject) => {

@@ -34,14 +34,15 @@ function Chat(){
 
   const startRecording = () => {
     console.log("Starting recording...");
-    
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-          const recorder = new MediaRecorder(stream);
-          setMediaRecorder(recorder);
-          const audioChunks = [];
-          recorder.addEventListener('dataavailable', e => {
-            audioChunks.push(e.data);
-          });
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then((stream) => {
+        const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+        setMediaRecorder(recorder);
+  
+        const audioChunks = [];
+        recorder.addEventListener('dataavailable', (event) => {
+          audioChunks.push(event.data);
+        });
   
         recorder.addEventListener('stop', () => {
           const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });

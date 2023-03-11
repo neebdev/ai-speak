@@ -225,7 +225,10 @@ const createCompletion = async (text) => {
         <button
           onTouchStart={startRecording}
           onTouchEnd={stopRecording} 
-          style={{ userSelect: 'none' }}
+          style={{ 
+            userSelect: 'none',
+            webkitUserSelect: 'none',
+          }}
           >{recording ? "Listening..":"Hold to Speak"}
         </button>
     </div>

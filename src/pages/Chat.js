@@ -34,15 +34,14 @@ function Chat(){
 
   const startRecording = () => {
     console.log("Starting recording...");
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then((stream) => {
-        const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-        setMediaRecorder(recorder);
-  
-        const audioChunks = [];
-        recorder.addEventListener('dataavailable', (event) => {
-          audioChunks.push(event.data);
-        });
+    
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+          const recorder = new MediaRecorder(stream);
+          setMediaRecorder(recorder);
+          const audioChunks = [];
+          recorder.addEventListener('dataavailable', e => {
+            audioChunks.push(e.data);
+          });
   
         recorder.addEventListener('stop', () => {
           const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
@@ -225,10 +224,6 @@ const createCompletion = async (text) => {
         <button
           onTouchStart={startRecording}
           onTouchEnd={stopRecording} 
-          style={{ 
-            userSelect: 'none',
-            webkitUserSelect: 'none',
-          }}
           >{recording ? "Listening..":"Hold to Speak"}
         </button>
     </div>

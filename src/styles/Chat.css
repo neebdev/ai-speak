@@ -116,6 +116,11 @@ body{
     overflow-y: scroll;
     margin-bottom: 60px;
     }
+    .chat-view button{
+      -webkit-user-select: none; /* Safari */
+      -ms-user-select: none; /* IE 10 and IE 11 */
+      user-select: none; /* Standard syntax */
+    }
     .mobile-header {
     font-family: 'Roboto Slab', serif;
     display: block;

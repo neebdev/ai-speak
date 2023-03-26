@@ -15,7 +15,6 @@ function Chat(){
   });
   const openai = new OpenAIApi(configuration);
   const speechConfig = sdk.SpeechConfig.fromSubscription(process.env.REACT_APP_TTS_API, process.env.REACT_APP_TTS_REGION);
-
   const { characterId } = useParams();
   const navigate = useNavigate();
   const { getCharacterById } = useContext(CharacterContext);  
